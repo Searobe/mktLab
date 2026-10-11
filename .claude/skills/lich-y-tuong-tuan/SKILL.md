@@ -10,7 +10,7 @@ description: Soạn lịch nội dung một tuần cho Lab Bàn (4–5 video ng�
 gì) · `bai/` 4 tuần gần nhất (tránh lặp chủ đề) · ngày lễ / mùa trong tuần (20/11, Tết, mùa cưới…).
 
 ## Cách soạn
-1. **60% theo kiểu đã thắng, 40% thử kiểu mới.** 4 tuần đầu chưa có bài thắng thì rải đều các trụ theo tỷ lệ khởi đầu.
+1. **60% theo kiểu đã thắng, 40% thử kiểu mới.** Chưa có bài thắng (dưới 10 bài có đủ số) thì rải các trụ theo tỷ lệ khởi đầu.
 2. Mỗi ô: ngày · giờ · định dạng · trụ · ý tưởng một câu · câu mở đầu dự kiến · cần quay gì (để nhân viên chuẩn bị).
 3. Gom cảnh quay theo buổi: cùng một buổi quay cho được 2–3 video (vd một ca đóng khung quay cả hậu trường lẫn biến hình).
 4. Không quá 2 bài cùng trụ liên tiếp.

@@ -34,7 +34,7 @@ dung người thật làm. Ảnh / video AI chỉ làm phụ, luôn gắn nhãn 
 | `hau-truong` | Hậu trường xưởng | Máy in chạy, cắt bo khung, đóng khung, quay cận «đã mắt» | Nhân viên lộ mặt cũng là dữ liệu cá nhân — cần nhân viên đồng ý |
 | `cau-chuyen` | Câu chuyện khách | Bức ảnh cưới 20 năm, ảnh duy nhất còn lại của ông | Chỉ khi khách đồng ý bằng văn bản; không bịa chuyện (bất biến 6) |
 | `meo` | Mẹo hay | Chọn khung, treo cỡ nào cho phòng khách, giấy in nào bền | Dữ kiện lấy từ `san-pham/` |
-| `bat-song` | Bắt sóng | Âm thanh đang trend, 20/11, Tết, Valentine, mùa cưới | Âm thanh dùng thư viện nhạc có bản quyền của nền tảng |
+| `bat-song` | Bắt sóng | Âm thanh đang trend, 20/11, Tết, Valentine, mùa cưới | Xem mục «Nhạc» bên dưới |
 
 Tỷ lệ khởi đầu (chỉnh sau 4 tuần theo số): biến hình 30% · hậu trường 25% · mẹo 20% · câu chuyện 15% · bắt sóng 10%.
 
@@ -43,6 +43,9 @@ Tỷ lệ khởi đầu (chỉnh sau 4 tuần theo số): biến hình 30% · h�
 - **4–5 video ngắn / tuần**. Một video đăng TikTok + Facebook Reels + Instagram Reels + YouTube Shorts. Xuất bản sạch, không
   dính logo nền tảng khác (bị coi là đăng lại).
 - **2–3 bài ảnh / chữ / tuần**: bài kể chuyện Facebook, ảnh nhiều tấm trước → sau.
+- **Nhạc:** video đăng nhiều kênh thì **không chèn nhạc trend lúc dựng** — nhạc thư viện của nền tảng này không có quyền ở
+  nền tảng kia, và tài khoản doanh nghiệp chỉ dùng được thư viện nhạc thương mại. Xuất video không nhạc (hoặc âm thanh thật
+  của xưởng), gắn nhạc trên từng app lúc đăng.
 - Giờ đăng ban đầu: 11:30 và 20:00 giờ Việt Nam. Đây là giả định, sau 4 tuần đổi theo số của chính trang.
 
 ## 5. Đo gì — mỗi bài, sau 7 ngày
@@ -60,7 +63,8 @@ Ghi vào trường `so_7_ngay` của bài (khuôn `bai/README.md`). Chưa có s�
 
 **Bài thắng** = trong 30 ngày gần nhất, nằm trong 20% bài đứng đầu theo (chia sẻ + lưu) / lượt xem, **và** có ít nhất
 một tin nhắn hỏi giá. Dùng thứ hạng trong chính trang, không dùng «chuẩn ngành» — chưa có nguồn số chuẩn cho ngành in ảnh
-ở Việt Nam. 4 tuần đầu chưa đủ bài để xếp hạng: chỉ ghi số, chưa gọi bài nào là thắng.
+ở Việt Nam. Dưới 10 bài có đủ số thì chưa đủ để xếp hạng: chỉ ghi số, chưa gọi bài nào là thắng. Bài thiếu số loại khỏi
+bảng xếp hạng, không coi trống là 0.
 
 ## 6. Vòng học hằng tuần (sáng thứ Hai)
 

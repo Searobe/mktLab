@@ -10,13 +10,13 @@ description: Viết bài chữ / bài ảnh kể chuyện cho Facebook, Instagra
 `chien-luoc/thu-vien-hook.md` · `san-pham/`.
 
 ## Khuôn
-1. **Dòng đầu** (hiện trước chữ «Xem thêm»): một câu gây tò mò hoặc cảm xúc, ≤ 15 chữ. Không mở bằng tên công ty.
+1. **Dòng đầu** (hiện trước chữ «Xem thêm»): một câu gây tò mò hoặc cảm xúc, giả định ≤ 15 chữ. Không mở bằng tên công ty.
 2. **Thân:** câu ngắn, mỗi đoạn 1–2 câu, cách dòng. Kể một người, một bức ảnh, một khoảnh khắc — cụ thể, không chung chung.
 3. **Kết:** một câu hỏi mời bình luận hoặc lời mời nhắn tin. Tối đa 3 hashtag, có `#LabBàn`.
 4. Bài nhiều ảnh: ghi thứ tự ảnh (ảnh 1 = kết quả đẹp nhất hoặc «trước» gây tò mò nhất) và dòng chữ trên từng ảnh.
 
 ## Câu chuyện khách
-- Chỉ viết khi bài có mã đồng ý `DY-…`. Không ghi tên thật trừ khi phiếu đồng ý cho phép, không ghi nơi ở, số điện thoại.
+- Chỉ viết khi bài có mã đồng ý `DY-…` của từng người xuất hiện (ghi đủ ở `dong_y`). Không ghi tên thật trừ khi phiếu đồng ý cho phép, không ghi nơi ở, số điện thoại.
 - Kể đúng những gì khách đã kể. Không thêm chi tiết cho cảm động.
 
 ## Ghi ra

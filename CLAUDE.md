@@ -51,9 +51,10 @@ Mọi chữ viết **tiếng Việt**. Repo **riêng tư**. Nhận vào phòng I
 
 Máy canh `scripts/kiem_kho.py` (thử phá ở `tests/test_kiem_kho.py`). CI đỏ là **báo**, không khoá được nhánh. Máy canh
 **đến đâu**:
-- Bất biến 1: kiểm khuôn bài (`trang_thai` hợp lệ; `da-duyet` / `da-dang` phải có `ngay_duyet`). Sếp có duyệt thật hay
+- Bất biến 1: kiểm khuôn bài (`trang_thai`, `dinh_dang`, `tru` hợp lệ; `da-duyet` / `da-dang` phải có `ngay_duyet`). Sếp có duyệt thật hay
   không thì máy không biết; cổng thật là Sếp merge PR.
-- Bất biến 3, 4: bài khai `anh_ai: co` thì phải có `nhan_ai: co`; `anh_khach` chỉ là `khong` hoặc mã đồng ý `DY-<số>`.
+- Bất biến 3, 4: bài khai `anh_ai: co` thì phải có `nhan_ai: co`; `dong_y` chỉ là `khong` hoặc danh sách mã `DY-<số>`
+  (mỗi người lộ mặt một mã). Đủ mã cho từng người chưa thì người rà đối chiếu với video.
   Ảnh có nhãn thật hay không thì người rà xem.
 - Bất biến 5: bắt dãy ≥ 9 chữ số (điện thoại, tài khoản, CCCD) và địa chỉ email (trừ `@labban.vn`, `@example.com`).
   Bỏ qua số tiền chấm hàng nghìn (không mở đầu bằng 0, ≤ 10 chữ số) và ngày ISO. Cấm hẳn file Excel / Word / PowerPoint

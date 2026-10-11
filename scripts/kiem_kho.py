@@ -5,7 +5,7 @@ Chạy: python scripts/kiem_kho.py  (cần pyyaml==6.0.2, mccabe==0.7.0 — xem 
 Canh 6 thứ:
 1. Ảnh / video / file thiết kế không vào git (bất biến 8). Ngoại lệ: `thuong-hieu/logo/`, mỗi file ≤ 1 MB.
 2. Khuôn bài `bai/<yyyy-mm>/<ten>.md` (bất biến 1, 3, 4): `trang_thai`, `dinh_dang`, `tru` hợp lệ; `da-duyet` / `da-dang` có `ngay_duyet`;
-   `anh_ai: co` thì `nhan_ai: co`; `anh_khach` là `khong` hoặc mã đồng ý `DY-<số>`.
+   `anh_ai: co` thì `nhan_ai: co`; `dong_y` là `khong` hoặc danh sách mã đồng ý `DY-<số>` (khách, nhân viên lộ mặt).
 3. Skill `.claude/skills/<tên>/SKILL.md` theo đặc tả Agent Skills (agentskills.io/specification, rà 2026-10-09 ở
    labban-skills): `name` chữ thường / số / gạch nối ≤ 64 ký tự, trùng tên thư mục; `description` có chữ, ≤ 1024 ký tự.
 4. Code sạch (autoLab `docs/chuan-code-chung.md`): file ≤ 400 dòng; hàm Python ≤ 60 dòng, lồng ≤ 4, McCabe ≤ 15.
@@ -115,9 +115,10 @@ def loi_khuon_bai(fm: dict) -> list[str]:
         loi.append("anh_ai phải là co / khong")
     elif fm.get("anh_ai") == "co" and fm.get("nhan_ai") != "co":
         loi.append("có ảnh AI thì phải nhan_ai: co (bất biến 3 — Luật Trí tuệ nhân tạo)")
-    anh_khach = str(fm.get("anh_khach", "")).strip()
-    if anh_khach != "khong" and not MA_DONG_Y.match(anh_khach):
-        loi.append("anh_khach phải là khong hoặc mã đồng ý DY-<số> (bất biến 4)")
+    dong_y = fm.get("dong_y")
+    ma = dong_y if isinstance(dong_y, list) else [dong_y]
+    if dong_y != "khong" and (not ma or not all(MA_DONG_Y.match(str(m).strip()) for m in ma)):
+        loi.append("dong_y phải là khong hoặc danh sách mã đồng ý [DY-<số>, …] — mỗi người lộ mặt một mã (bất biến 4)")
     return loi
 
 

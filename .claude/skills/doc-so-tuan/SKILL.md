@@ -11,11 +11,14 @@ nên AI chưa tự lấy số.
 
 ## Cách làm
 1. Ghi số vào `so_7_ngay` của từng bài. **Thiếu số nào để trống, không ghi 0** (sổ luật A7). Bài chưa đủ 7 ngày thì chưa ghi.
-2. Xếp hạng bài trong 30 ngày gần nhất theo (chia sẻ + lưu) / lượt xem. **Bài thắng** = top 20% **và** có ≥ 1 tin nhắn hỏi
-   giá (`chien-luoc/organic.md` mục 5). Dưới 10 bài có số thì chỉ báo số, chưa gọi thắng / thua.
+2. Xếp hạng bài trong 30 ngày gần nhất theo (chia sẻ + lưu) / lượt xem. **Bài thiếu một trong các số này thì loại khỏi bảng
+   xếp hạng**, ghi «chưa có số» — không coi ô trống là 0. **Bài thắng** = top 20% **và** có ≥ 1 tin nhắn hỏi giá
+   (`chien-luoc/organic.md` mục 5). Dưới 10 bài có đủ số thì chỉ báo số, chưa gọi thắng / thua.
 3. Với mỗi bài thắng / thua rõ: ghi một dòng vào `chien-luoc/thu-vien-hook.md` (ngày · bài · câu mở đầu · vì sao, dẫn số).
    Chỉ kết luận điều số cho thấy; một bài là chưa đủ để thành luật.
 4. Đề xuất đẩy tiền: chỉ bài thắng; ghi số tiền, số ngày, tệp khách. Cộng dồn trong tháng không vượt **5 triệu**. Sếp tự bấm.
+   Tệp khách chỉ theo tuổi / vùng / sở thích của nền tảng — **không** đề xuất tải danh sách số điện thoại khách lên Meta khi
+   khách chưa đồng ý (CLAUDE.md bất biến 5).
 
 ## Báo Sếp (sổ luật A21)
 Tiêu đề ngắn · kết luận ngay dưới · mỗi dòng một ý:

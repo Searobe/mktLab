@@ -15,7 +15,7 @@ trang_thai: nhap        # nhap · da-duyet · da-dang
 ngay_duyet:             # yyyy-mm-dd — bắt buộc khi da-duyet / da-dang
 anh_ai: khong           # co · khong — ảnh / video có do AI tạo hoặc sửa không
 nhan_ai: khong          # co · khong — đã gắn nhãn AI chưa (anh_ai: co thì phải co)
-anh_khach: khong        # khong · DY-<số> — mã phiếu đồng ý (khách hoặc nhân viên lộ mặt), không ghi tên
+dong_y: khong           # khong · [DY-12, DY-15] — mã phiếu đồng ý, MỖI người lộ mặt (khách, nhân viên) một mã; không ghi tên
 anh: []                 # đường dẫn Drive LabbanMarketing, không để ảnh trong git
 so_7_ngay:              # điền sau 7 ngày; chưa có số thì để trống, KHÔNG ghi 0
   xem:
