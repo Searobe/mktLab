@@ -8,6 +8,7 @@ Mọi chữ viết **tiếng Việt**. Repo **riêng tư**. Nhận vào phòng I
 
 - autoLab `docs/so-luat.md`: sổ luật tổng của phòng IT, áp cho mọi repo. Luật ở đây chặt hơn thì luật ở đây thắng.
 - autoLab `docs/ke-hoach/2026-10-11-mktlab.md`: kế hoạch đã duyệt (kênh theo đợt, cổng duyệt bài, ngân sách, nguồn đã tra).
+- `chien-luoc/organic.md`: hướng chính từ 2026-10-11 — organic, cỗ máy thử – học, 5 trụ nội dung, cách đo bài thắng.
 - `thuong-hieu/`: giọng văn, từ cấm, màu, logo. **Viết bất kỳ chữ nào ra ngoài thì đọc thư mục này trước.**
 - `san-pham/`: dữ kiện sản phẩm. Giá, khuyến mãi, cam kết chỉ lấy từ đây.
 
@@ -17,7 +18,7 @@ Mọi chữ viết **tiếng Việt**. Repo **riêng tư**. Nhận vào phòng I
 |---|---|
 | `thuong-hieu/` | Giọng văn Lab Bàn, mẫu đúng / sai, từ cấm, bảng màu; `logo/` là ảnh duy nhất được vào git |
 | `san-pham/` | Dữ kiện sản phẩm, giá đã duyệt (ghi ngày duyệt) |
-| `chien-luoc/` | Chân dung khách lẻ, kênh, mục tiêu từng quý |
+| `chien-luoc/` | `organic.md` (hướng chính), `thu-vien-hook.md` (câu mở đầu thắng / thua), chân dung khách lẻ |
 | `lich-noi-dung/` | Lịch đăng từng tháng `<yyyy-mm>.md` |
 | `bai/` | Mỗi bài một file `bai/<yyyy-mm>/<ten-bai>.md`, khuôn ở `bai/README.md` |
 | `quang-cao/` | Kế hoạch chiến dịch, báo cáo số liệu (chỉ số đếm) |
@@ -31,12 +32,13 @@ Mọi chữ viết **tiếng Việt**. Repo **riêng tư**. Nhận vào phòng I
    - Bài chỉ mang `trang_thai: da-duyet` khi Sếp đã duyệt đúng bài đó, có `ngay_duyet`.
 2. **AI không tự chi tiền.** Chiến dịch AI soạn luôn để **TẠM DỪNG**; Sếp tự bật. Trần do Sếp chốt 2026-10-11:
    **5 triệu / tháng** tiền quảng cáo Meta (chưa gồm VAT Meta thu thêm) · **500 nghìn / tháng** chi phí AI làm ảnh / video.
-   Vượt trần thì dừng và hỏi.
+   Vượt trần thì dừng và hỏi. Từ 2026-10-11 tiền quảng cáo **chỉ dùng đẩy bài organic thắng** (`chien-luoc/organic.md`
+   mục 7); tháng không có bài thắng thì không tiêu.
 3. **Nhãn AI** (Luật Trí tuệ nhân tạo 134/2025/QH15, hiệu lực 01/03/2026). Ảnh / video AI tạo hoặc sửa mà người xem dễ
    tưởng là thật thì **gắn nhãn**. Không xoá, không che nhãn. Chưa rõ trường hợp nào phải gắn thì **gắn**: chưa thấy nghị
    định hướng dẫn cách gắn (tra 2026-10-11).
-4. **Ảnh khách và mặt người thật** chỉ dùng khi khách đã **đồng ý bằng văn bản** (Luật Bảo vệ dữ liệu cá nhân). Bài ghi
-   **mã đồng ý**, không ghi tên, số điện thoại. Không gửi ảnh khách cho AI ở nước ngoài khi khách chưa đồng ý việc đó.
+4. **Ảnh khách và mặt người thật** chỉ dùng khi người đó đã **đồng ý bằng văn bản** (Luật Bảo vệ dữ liệu cá nhân) — cả
+   khách lẫn **nhân viên lộ mặt** trong video xưởng. Bài ghi **mã đồng ý**, không ghi tên, số điện thoại. Không gửi ảnh khách cho AI ở nước ngoài khi khách chưa đồng ý việc đó.
 5. **Không dữ liệu cá nhân, không bí mật trong repo** (sổ luật A2, A3). Khoá Meta / TikTok / Zalo OA chỉ ở biến môi
    trường. Không đưa danh sách số điện thoại khách lên Meta (tệp khách tuỳ chỉnh) khi khách chưa đồng ý.
 6. **Đúng sự thật** (Luật Quảng cáo sửa đổi 75/2025/QH15, hiệu lực 01/01/2026). Giá, khuyến mãi, cam kết chỉ lấy từ
@@ -59,13 +61,12 @@ Máy canh `scripts/kiem_kho.py` (thử phá ở `tests/test_kiem_kho.py`). CI đ
 - Bất biến 8: chặn ảnh / video / file thiết kế ngoài `thuong-hieu/logo/`, và logo > 1 MB.
 - Bất biến 2, 6, 7: **chỉ là lời dặn**, người rà đọc.
 
-## Kênh — mở theo đợt (Sếp chốt 2026-10-11)
+## Kênh — mở theo đợt (Sếp chốt 2026-10-11, đổi cùng ngày sang organic)
 
 | Đợt | Kênh | Trạng thái |
 |---|---|---|
-| 1 | Facebook + Instagram — dồn tiền quảng cáo vào đây | chưa nối (chờ Sếp kiểm BM cũ) |
+| 1 | **TikTok + Facebook / Instagram Reels + YouTube Shorts** — video ngắn là chính (đổi 2026-10-11, hướng organic). TikTok: AI soạn, **người bấm đăng** (API chưa cho đăng công khai) | chưa nối; Facebook chờ Sếp kiểm BM cũ |
 | 2 | Zalo OA + hồ sơ Google Maps | chưa |
-| 3 | TikTok — app phải qua kiểm duyệt của TikTok mới đăng công khai được | chưa |
 
 Nối một kênh là một kế hoạch riêng (khoá, quyền, cách đăng), Sếp duyệt rồi mới làm. Khoá chỉ xin **quyền đăng bài**;
 quyền quảng cáo là khoá riêng.

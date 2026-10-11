@@ -14,6 +14,8 @@ import kiem_kho  # noqa: E402
 
 BAI_DUNG = """---
 kenh: facebook
+dinh_dang: video
+tru: bien-hinh
 trang_thai: da-duyet
 ngay_duyet: 2026-10-20
 anh_ai: co
@@ -86,6 +88,13 @@ class KiemBai(CoKho):
     def test_trang_thai_la(self) -> None:
         self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("da-duyet", "xong"))
         self.assertIn("trang_thai", kiem_kho.kiem_bai(self.goc)[0])
+
+    def test_dinh_dang_va_tru_la(self) -> None:
+        self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("dinh_dang: video", "dinh_dang: reel").replace("tru: bien-hinh", "tru: khac"))
+        loi = kiem_kho.kiem_bai(self.goc)
+        self.assertEqual(len(loi), 2)
+        self.assertIn("dinh_dang", loi[0])
+        self.assertIn("tru", loi[1])
 
     def test_bai_sai_cho_va_thieu_frontmatter(self) -> None:
         self.ghi("bai/a.md", BAI_DUNG)

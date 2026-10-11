@@ -4,7 +4,7 @@ Chạy: python scripts/kiem_kho.py  (cần pyyaml==6.0.2, mccabe==0.7.0 — xem 
 
 Canh 6 thứ:
 1. Ảnh / video / file thiết kế không vào git (bất biến 8). Ngoại lệ: `thuong-hieu/logo/`, mỗi file ≤ 1 MB.
-2. Khuôn bài `bai/<yyyy-mm>/<ten>.md` (bất biến 1, 3, 4): `trang_thai` hợp lệ; `da-duyet` / `da-dang` có `ngay_duyet`;
+2. Khuôn bài `bai/<yyyy-mm>/<ten>.md` (bất biến 1, 3, 4): `trang_thai`, `dinh_dang`, `tru` hợp lệ; `da-duyet` / `da-dang` có `ngay_duyet`;
    `anh_ai: co` thì `nhan_ai: co`; `anh_khach` là `khong` hoặc mã đồng ý `DY-<số>`.
 3. Skill `.claude/skills/<tên>/SKILL.md` theo đặc tả Agent Skills (agentskills.io/specification, rà 2026-10-09 ở
    labban-skills): `name` chữ thường / số / gạch nối ≤ 64 ký tự, trùng tên thư mục; `description` có chữ, ≤ 1024 ký tự.
@@ -43,6 +43,9 @@ DUOI_ANH = {
 THU_MUC_LOGO = "thuong-hieu/logo/"
 MAX_LOGO = 1024 * 1024
 TRANG_THAI = {"nhap", "da-duyet", "da-dang"}
+# Định dạng và trụ nội dung — chien-luoc/organic.md mục 3 (Sếp duyệt 2026-10-11). Thêm trụ thì sửa cả hai nơi.
+DINH_DANG = {"video", "anh", "chu"}
+TRU = {"bien-hinh", "hau-truong", "cau-chuyen", "meo", "bat-song"}
 MA_DONG_Y = re.compile(r"^DY-\d+$")
 MAX_DONG_FILE, MAX_DONG_HAM, MAX_LONG, MAX_PHUC_TAP = 400, 60, 4, 15
 BO_QUA = {".git", "node_modules", ".venv", "venv", "__pycache__"}
@@ -102,6 +105,10 @@ def loi_khuon_bai(fm: dict) -> list[str]:
     trang_thai = fm.get("trang_thai")
     if trang_thai not in TRANG_THAI:
         loi.append(f"trang_thai «{trang_thai}» phải là một trong {sorted(TRANG_THAI)}")
+    if fm.get("dinh_dang") not in DINH_DANG:
+        loi.append(f"dinh_dang «{fm.get('dinh_dang')}» phải là một trong {sorted(DINH_DANG)}")
+    if fm.get("tru") not in TRU:
+        loi.append(f"tru «{fm.get('tru')}» phải là một trong {sorted(TRU)} (chien-luoc/organic.md)")
     if trang_thai in {"da-duyet", "da-dang"} and not la_ngay(fm.get("ngay_duyet")):
         loi.append("bài đã duyệt / đã đăng phải có ngay_duyet dạng yyyy-mm-dd (bất biến 1)")
     if fm.get("anh_ai") not in {"co", "khong"}:
