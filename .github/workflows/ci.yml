@@ -1,0 +1,35 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  # Gitleaks đọc danh sách commit của PR qua API (repo riêng tư cần quyền này).
+  pull-requests: read
+# Action ghim theo SHA commit đầy đủ (sổ luật autoLab A18). SHA chép từ CI labban-skills (rà 2026-10-09).
+jobs:
+  kiem:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      # venv riêng: Python hệ thống của Ubuntu 24.04 chặn `pip install` thẳng (PEP 668).
+      - run: python3 -m venv .venv && .venv/bin/pip install --quiet -r requirements-kiem.txt
+      - name: Thử phá máy canh (máy canh còn canh không)
+        run: .venv/bin/python -m unittest discover -s tests -v
+      - name: Máy canh (ảnh · khuôn bài · skill · code sạch · dữ liệu cá nhân)
+        run: .venv/bin/python scripts/kiem_kho.py
+
+  bi-mat:
+    # Quét bí mật lọt vào lịch sử git. Repo cá nhân → không cần license.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Không bình luận vào PR và KHÔNG tải báo cáo lên artifact (báo cáo chứa chính bí mật tìm được).
+          GITLEAKS_ENABLE_COMMENTS: false
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: false
