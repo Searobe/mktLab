@@ -14,11 +14,13 @@ import kiem_kho  # noqa: E402
 
 BAI_DUNG = """---
 kenh: facebook
+dinh_dang: video
+tru: bien-hinh
 trang_thai: da-duyet
 ngay_duyet: 2026-10-20
 anh_ai: co
 nhan_ai: co
-anh_khach: khong
+dong_y: khong
 ---
 Nội dung bài.
 """
@@ -75,17 +77,30 @@ class KiemBai(CoKho):
         self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("nhan_ai: co", "nhan_ai: khong"))
         self.assertIn("nhan_ai", kiem_kho.kiem_bai(self.goc)[0])
 
-    def test_anh_khach_khong_co_ma_dong_y(self) -> None:
-        self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("anh_khach: khong", "anh_khach: Chị Lan"))
+    def test_dong_y_khong_phai_ma(self) -> None:
+        self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("dong_y: khong", "dong_y: [DY-3, Chị Lan]"))
         self.assertIn("DY-", kiem_kho.kiem_bai(self.goc)[0])
 
-    def test_anh_khach_co_ma_dong_y_xanh(self) -> None:
-        self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("anh_khach: khong", "anh_khach: DY-12"))
+    def test_dong_y_mot_ma_va_nhieu_ma_xanh(self) -> None:
+        self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("dong_y: khong", "dong_y: DY-12"))
+        self.ghi("bai/2026-10/b.md", BAI_DUNG.replace("dong_y: khong", "dong_y: [DY-12, DY-15]"))
         self.assertEqual(kiem_kho.kiem_bai(self.goc), [])
+
+    def test_dong_y_danh_sach_rong_hoac_thieu(self) -> None:
+        self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("dong_y: khong", "dong_y: []"))
+        self.ghi("bai/2026-10/b.md", BAI_DUNG.replace("dong_y: khong\n", ""))
+        self.assertEqual(len(kiem_kho.kiem_bai(self.goc)), 2)
 
     def test_trang_thai_la(self) -> None:
         self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("da-duyet", "xong"))
         self.assertIn("trang_thai", kiem_kho.kiem_bai(self.goc)[0])
+
+    def test_dinh_dang_va_tru_la(self) -> None:
+        self.ghi("bai/2026-10/a.md", BAI_DUNG.replace("dinh_dang: video", "dinh_dang: reel").replace("tru: bien-hinh", "tru: khac"))
+        loi = kiem_kho.kiem_bai(self.goc)
+        self.assertEqual(len(loi), 2)
+        self.assertIn("dinh_dang", loi[0])
+        self.assertIn("tru", loi[1])
 
     def test_bai_sai_cho_va_thieu_frontmatter(self) -> None:
         self.ghi("bai/a.md", BAI_DUNG)

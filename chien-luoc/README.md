@@ -1,4 +1,6 @@
 # Chiến lược
 
-Chân dung khách lẻ, kênh, mục tiêu từng quý. Kênh mở theo đợt: Facebook + Instagram → Zalo OA + Google Maps → TikTok
-(CLAUDE.md «Kênh»).
+- `organic.md` — hướng chính từ 2026-10-11: cỗ máy thử – học, 5 trụ nội dung, nhịp đăng, cách đo bài thắng, tiền chỉ đẩy
+  bài thắng.
+- `thu-vien-hook.md` — câu mở đầu thắng / thua theo số thật.
+- `khach-le.md` — chân dung khách lẻ (soạn ở mốc bộ não thương hiệu).

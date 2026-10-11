@@ -4,8 +4,8 @@ Chạy: python scripts/kiem_kho.py  (cần pyyaml==6.0.2, mccabe==0.7.0 — xem 
 
 Canh 6 thứ:
 1. Ảnh / video / file thiết kế không vào git (bất biến 8). Ngoại lệ: `thuong-hieu/logo/`, mỗi file ≤ 1 MB.
-2. Khuôn bài `bai/<yyyy-mm>/<ten>.md` (bất biến 1, 3, 4): `trang_thai` hợp lệ; `da-duyet` / `da-dang` có `ngay_duyet`;
-   `anh_ai: co` thì `nhan_ai: co`; `anh_khach` là `khong` hoặc mã đồng ý `DY-<số>`.
+2. Khuôn bài `bai/<yyyy-mm>/<ten>.md` (bất biến 1, 3, 4): `trang_thai`, `dinh_dang`, `tru` hợp lệ; `da-duyet` / `da-dang` có `ngay_duyet`;
+   `anh_ai: co` thì `nhan_ai: co`; `dong_y` là `khong` hoặc danh sách mã đồng ý `DY-<số>` (khách, nhân viên lộ mặt).
 3. Skill `.claude/skills/<tên>/SKILL.md` theo đặc tả Agent Skills (agentskills.io/specification, rà 2026-10-09 ở
    labban-skills): `name` chữ thường / số / gạch nối ≤ 64 ký tự, trùng tên thư mục; `description` có chữ, ≤ 1024 ký tự.
 4. Code sạch (autoLab `docs/chuan-code-chung.md`): file ≤ 400 dòng; hàm Python ≤ 60 dòng, lồng ≤ 4, McCabe ≤ 15.
@@ -43,6 +43,9 @@ DUOI_ANH = {
 THU_MUC_LOGO = "thuong-hieu/logo/"
 MAX_LOGO = 1024 * 1024
 TRANG_THAI = {"nhap", "da-duyet", "da-dang"}
+# Định dạng và trụ nội dung — chien-luoc/organic.md mục 3 (Sếp duyệt 2026-10-11). Thêm trụ thì sửa cả hai nơi.
+DINH_DANG = {"video", "anh", "chu"}
+TRU = {"bien-hinh", "hau-truong", "cau-chuyen", "meo", "bat-song"}
 MA_DONG_Y = re.compile(r"^DY-\d+$")
 MAX_DONG_FILE, MAX_DONG_HAM, MAX_LONG, MAX_PHUC_TAP = 400, 60, 4, 15
 BO_QUA = {".git", "node_modules", ".venv", "venv", "__pycache__"}
@@ -102,15 +105,20 @@ def loi_khuon_bai(fm: dict) -> list[str]:
     trang_thai = fm.get("trang_thai")
     if trang_thai not in TRANG_THAI:
         loi.append(f"trang_thai «{trang_thai}» phải là một trong {sorted(TRANG_THAI)}")
+    if fm.get("dinh_dang") not in DINH_DANG:
+        loi.append(f"dinh_dang «{fm.get('dinh_dang')}» phải là một trong {sorted(DINH_DANG)}")
+    if fm.get("tru") not in TRU:
+        loi.append(f"tru «{fm.get('tru')}» phải là một trong {sorted(TRU)} (chien-luoc/organic.md)")
     if trang_thai in {"da-duyet", "da-dang"} and not la_ngay(fm.get("ngay_duyet")):
         loi.append("bài đã duyệt / đã đăng phải có ngay_duyet dạng yyyy-mm-dd (bất biến 1)")
     if fm.get("anh_ai") not in {"co", "khong"}:
         loi.append("anh_ai phải là co / khong")
     elif fm.get("anh_ai") == "co" and fm.get("nhan_ai") != "co":
         loi.append("có ảnh AI thì phải nhan_ai: co (bất biến 3 — Luật Trí tuệ nhân tạo)")
-    anh_khach = str(fm.get("anh_khach", "")).strip()
-    if anh_khach != "khong" and not MA_DONG_Y.match(anh_khach):
-        loi.append("anh_khach phải là khong hoặc mã đồng ý DY-<số> (bất biến 4)")
+    dong_y = fm.get("dong_y")
+    ma = dong_y if isinstance(dong_y, list) else [dong_y]
+    if dong_y != "khong" and (not ma or not all(MA_DONG_Y.match(str(m).strip()) for m in ma)):
+        loi.append("dong_y phải là khong hoặc danh sách mã đồng ý [DY-<số>, …] — mỗi người lộ mặt một mã (bất biến 4)")
     return loi
 
 
