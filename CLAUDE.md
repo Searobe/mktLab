@@ -54,7 +54,8 @@ Máy canh `scripts/kiem_kho.py` (thử phá ở `tests/test_kiem_kho.py`). CI đ
 - Bất biến 3, 4: bài khai `anh_ai: co` thì phải có `nhan_ai: co`; `anh_khach` chỉ là `khong` hoặc mã đồng ý `DY-<số>`.
   Ảnh có nhãn thật hay không thì người rà xem.
 - Bất biến 5: bắt dãy ≥ 9 chữ số (điện thoại, tài khoản, CCCD) và địa chỉ email (trừ `@labban.vn`, `@example.com`).
-  Tên người thì người rà đọc. Khoá bí mật: Gitleaks trong CI.
+  Bỏ qua số tiền chấm hàng nghìn (không mở đầu bằng 0, ≤ 10 chữ số) và ngày ISO. Cấm hẳn file Excel / Word / PowerPoint
+  (máy không đọc được bên trong). Tên người thì người rà đọc. Khoá bí mật: Gitleaks trong CI.
 - Bất biến 8: chặn ảnh / video / file thiết kế ngoài `thuong-hieu/logo/`, và logo > 1 MB.
 - Bất biến 2, 6, 7: **chỉ là lời dặn**, người rà đọc.
 
@@ -84,6 +85,13 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-kiem.txt   # mộ
 ```
 
 Repo không có bước build, không tự lên bản. Merge `main` không đăng gì ra ngoài.
+
+CI (`.github/workflows/ci.yml`): thử phá máy canh + máy canh + Gitleaks. Thư viện (pip, action) do Dependabot rà lỗ hổng
+và mở PR nâng bản (`.github/dependabot.yml`). **Không có bước kiểm kiểu**: repo chỉ có một script canh nhỏ, đã có test thử
+phá từng nhánh; thêm mã lớn hơn thì thêm kiểm kiểu.
+
+**Sao lưu (A14):** dữ liệu trong git đã có bản trên GitHub. Ảnh / video ở Drive `LabbanMarketing` **chưa có sao lưu riêng**
+(2026-10-11, đã báo Sếp) — xoá nhầm trên Drive thì chỉ còn thùng rác 30 ngày.
 
 ## Code sạch (autoLab `docs/chuan-code-chung.md`)
 

@@ -37,6 +37,8 @@ DUOI_KIEM = {".md", ".py", ".json", ".yaml", ".yml", ".txt", ".sh", ".js", ".htm
 DUOI_ANH = {
     ".jpg", ".jpeg", ".png", ".gif", ".webp", ".heic", ".tif", ".tiff", ".bmp", ".svg", ".raw", ".cr2", ".nef",
     ".mp4", ".mov", ".avi", ".mkv", ".webm", ".m4v", ".psd", ".ai", ".indd", ".pdf", ".zip",
+    # File văn phòng hay chứa danh sách khách — máy không đọc được bên trong nên cấm hẳn (bất biến 5).
+    ".xlsx", ".xls", ".xlsm", ".docx", ".doc", ".pptx", ".ppt", ".numbers", ".pages", ".key",
 }
 THU_MUC_LOGO = "thuong-hieu/logo/"
 MAX_LOGO = 1024 * 1024
@@ -106,7 +108,7 @@ def loi_khuon_bai(fm: dict) -> list[str]:
         loi.append("anh_ai phải là co / khong")
     elif fm.get("anh_ai") == "co" and fm.get("nhan_ai") != "co":
         loi.append("có ảnh AI thì phải nhan_ai: co (bất biến 3 — Luật Trí tuệ nhân tạo)")
-    anh_khach = str(fm.get("anh_khach", ""))
+    anh_khach = str(fm.get("anh_khach", "")).strip()
     if anh_khach != "khong" and not MA_DONG_Y.match(anh_khach):
         loi.append("anh_khach phải là khong hoặc mã đồng ý DY-<số> (bất biến 4)")
     return loi
@@ -114,9 +116,12 @@ def loi_khuon_bai(fm: dict) -> list[str]:
 
 def kiem_bai(goc: Path) -> list[str]:
     loi: list[str] = []
-    for f in sorted((goc / "bai").rglob("*.md")):
+    for f in sorted(x for x in (goc / "bai").rglob("*") if x.is_file()):
         duong = f.relative_to(goc).as_posix()
         if f.name == "README.md":
+            continue
+        if f.suffix != ".md":
+            loi.append(f"{duong}: bài phải là file .md")
             continue
         if f.parent.parent != goc / "bai" or not re.fullmatch(r"\d{4}-\d{2}", f.parent.name):
             loi.append(f"{duong}: bài phải nằm ở bai/<yyyy-mm>/<ten-bai>.md")
@@ -213,9 +218,16 @@ def kiem_code_sach(goc: Path) -> list[str]:
     return loi
 
 
+def la_so_tien(phan: str) -> bool:
+    """Số chấm hàng nghìn là tiền khi không mở đầu bằng 0 và ≤ 10 chữ số (dưới 10 tỷ). Điện thoại, CCCD chấm theo nhóm ba
+    (mở đầu bằng 0) và điện thoại có mã nước (11 chữ số) viết giống tiền nhưng là số cá nhân — ca thử ở tests/."""
+    so = re.sub(r"\D", "", phan)
+    return bool(SO_TIEN.match(phan)) and not so.startswith("0") and len(so) <= 10
+
+
 def la_so_ca_nhan(cum: str) -> bool:
     khuc = re.findall(r"\d+", cum)
-    if sum(map(len, khuc)) < 9 or all(SO_TIEN.match(phan) for phan in cum.split()):
+    if sum(map(len, khuc)) < 9 or all(la_so_tien(phan) for phan in cum.split()):
         return False  # các khoản tiền đứng cạnh nhau («15.000.000 12.500.000») không phải một số
     return len(khuc) == 1 or min(map(len, khuc)) >= 2
 

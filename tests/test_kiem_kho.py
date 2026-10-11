@@ -47,6 +47,11 @@ class KiemAnh(CoKho):
         self.ghi("quang-cao/video.MP4", b"0")
         self.assertEqual(len(kiem_kho.kiem_anh(self.goc)), 2)
 
+    def test_file_van_phong_bi_chan(self) -> None:
+        self.ghi("chien-luoc/khach.xlsx", b"PK")
+        self.ghi("san-pham/gia.DOCX", b"PK")
+        self.assertEqual(len(kiem_kho.kiem_anh(self.goc)), 2)
+
     def test_logo_nho_duoc_qua(self) -> None:
         self.ghi("thuong-hieu/logo/logo.png", b"\x89PNG")
         self.assertEqual(kiem_kho.kiem_anh(self.goc), [])
@@ -85,8 +90,9 @@ class KiemBai(CoKho):
     def test_bai_sai_cho_va_thieu_frontmatter(self) -> None:
         self.ghi("bai/a.md", BAI_DUNG)
         self.ghi("bai/2026-10/b.md", "không có frontmatter")
+        self.ghi("bai/2026-10/c.txt", BAI_DUNG)
         loi = kiem_kho.kiem_bai(self.goc)
-        self.assertEqual(len(loi), 2)
+        self.assertEqual(len(loi), 3)
 
 
 class KiemSkill(CoKho):
@@ -117,8 +123,14 @@ class KiemDuLieuCaNhan(CoKho):
         self.ghi("chien-luoc/b.md", "SĐT.0987654321")
         self.assertEqual(len(kiem_kho.kiem_du_lieu_ca_nhan(self.goc)), 2)
 
+    def test_so_viet_nhu_tien_van_bi_bat(self) -> None:
+        self.ghi("a.md", "SĐT 091.234.567")
+        self.ghi("b.md", "CCCD 001.234.567.890")
+        self.ghi("c.md", "gọi 84.912.345.678")
+        self.assertEqual(len(kiem_kho.kiem_du_lieu_ca_nhan(self.goc)), 3)
+
     def test_so_tien_khong_bi_bat(self) -> None:
-        self.ghi("san-pham/gia.md", "Khung 60x90: 1.250.000 đồng, album 15.000.000 12.500.000")
+        self.ghi("san-pham/gia.md", "Khung 60x90: 1.250.000 đồng, album 15.000.000 12.500.000, quỹ 1.250.000.000")
         self.assertEqual(kiem_kho.kiem_du_lieu_ca_nhan(self.goc), [])
 
     def test_ngay_gio_khong_bi_bat(self) -> None:

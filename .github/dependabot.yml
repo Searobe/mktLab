@@ -1,0 +1,11 @@
+# Rà lỗ hổng + nâng bản thư viện (checklist autoLab nhan-repo-moi.md «CI tối thiểu»). Mỗi PR nâng bản vẫn chờ Sếp duyệt.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
