@@ -1,0 +1,59 @@
+# Canh đẩy thẳng main (autoLab docs/mau/canh-day-thang-main.yml — chép nguyên vào .github/workflows/ của repo).
+#
+# Vì sao: chủ DN chốt 2026-10-08 KHÔNG nâng GitHub Pro, nên repo riêng tư không khoá được nhánh main (rulesets / branch
+# protection cho repo riêng tư cần Pro — docs.github.com «About rulesets»). Lớp này KHÔNG CHẶN được; nó PHÁT HIỆN: commit
+# lên main mà không đi qua một PR đã merge → workflow đỏ, GitHub gửi mail báo lỗi workflow cho chủ repo. Đã loại: hook
+# chặn phía máy (TableLab #482 — 4 vòng rà vẫn vượt được); nâng Pro (chủ DN không duyệt).
+name: canh-day-thang-main
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pull-requests: read
+# Giới hạn đã biết (lớp PHÁT HIỆN, không phải lớp CHẶN): người đẩy thẳng sửa luôn file này trong cùng lần đẩy thì lần đó có
+# thể không bị báo — vì vậy bước lên bản (TableLab deploy.yml, Lisa tu-trien-khai.sh) có chốt riêng, và commit đổi chính
+# file này luôn bị báo để chủ DN nhìn.
+jobs:
+  canh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mọi commit trong lần đẩy phải đi qua PR đã merge; không đẩy đè
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TRUOC: ${{ github.event.before }}
+          SAU: ${{ github.event.after }}
+          DAY_DE: ${{ github.event.forced }}
+        run: |
+          set -euo pipefail
+          loi=0
+          if [ "$DAY_DE" = "true" ]; then
+            echo "::error::main bị ĐẨY ĐÈ (force-push) — vi phạm luật «không đẩy thẳng main» (sổ luật A1). Báo chủ DN."
+            loi=1
+          fi
+          if [ "$TRUOC" = "0000000000000000000000000000000000000000" ]; then
+            ds="$SAU"
+          else
+            ss=$(gh api "repos/$REPO/compare/$TRUOC...$SAU")
+            ds=$(echo "$ss" | jq -r '.commits[].sha')
+            tong=$(echo "$ss" | jq '.total_commits'); dem=$(echo "$ds" | grep -c . || true)
+            if [ "$tong" != "$dem" ]; then
+              # API so sánh trả tối đa 250 commit — kiểm không hết thì báo đỏ, không cho qua.
+              echo "::error::Lần đẩy có $tong commit, chỉ kiểm được $dem — báo chủ DN xem tay."
+              loi=1
+            fi
+          fi
+          for sha in $ds; do
+            # Chỉ công nhận commit chính là commit merge (squash) của một PR đã merge VÀO main. Repo Lab Bàn merge kiểu squash;
+            # merge kiểu «merge commit» sẽ đẩy cả commit nhánh lên và bị báo nhầm — đúng ý: chỉ squash.
+            so=$(gh api "repos/$REPO/commits/$sha/pulls" --jq "[.[] | select(.merged_at != null and .base.ref == \"main\" and .merge_commit_sha == \"$sha\")] | length")
+            if [ "$so" = "0" ]; then
+              echo "::error::Commit $sha lên main KHÔNG đi qua PR đã merge — vi phạm luật «không đẩy thẳng main». Báo chủ DN."
+              loi=1
+            fi
+            if gh api "repos/$REPO/commits/$sha" --jq '.files[].filename' | grep -qx '.github/workflows/canh-day-thang-main.yml'; then
+              echo "::warning::Commit $sha sửa chính file canh này — chủ DN xem lại PR tương ứng."
+            fi
+          done
+          exit $loi
