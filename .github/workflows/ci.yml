@@ -19,6 +19,8 @@ jobs:
         run: .venv/bin/python -m unittest discover -s tests -v
       - name: Máy canh (ảnh · khuôn bài · skill · code sạch · dữ liệu cá nhân)
         run: .venv/bin/python scripts/kiem_kho.py
+      - name: Kiểm kiểu (mypy)
+        run: .venv/bin/mypy scripts --ignore-missing-imports
 
   bi-mat:
     # Quét bí mật lọt vào lịch sử git. Repo cá nhân → không cần license.

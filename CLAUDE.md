@@ -57,7 +57,8 @@ Máy canh `scripts/kiem_kho.py` (thử phá ở `tests/test_kiem_kho.py`). CI đ
   Bỏ qua số tiền chấm hàng nghìn (không mở đầu bằng 0, ≤ 10 chữ số) và ngày ISO. Cấm hẳn file Excel / Word / PowerPoint
   (máy không đọc được bên trong). Tên người thì người rà đọc. Khoá bí mật: Gitleaks trong CI.
 - Bất biến 8: chặn ảnh / video / file thiết kế ngoài `thuong-hieu/logo/`, và logo > 1 MB.
-- Bất biến 2, 6, 7: **chỉ là lời dặn**, người rà đọc.
+- Bất biến 2, 6, 7: **chỉ là lời dặn**, người rà đọc. Riêng tiền AI làm ảnh / video: `scripts/gemini_media.py` tự dừng khi
+  chạm trần (thử phá ở `tests/test_gemini_media.py`). Tiền làm ở chỗ khác (Canva trả phí…) máy không biết.
 
 ## Kênh — mở theo đợt (Sếp chốt 2026-10-11)
 
@@ -82,13 +83,20 @@ quyền quảng cáo là khoá riêng.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements-kiem.txt   # một lần
 .venv/bin/python -m unittest discover -s tests && .venv/bin/python scripts/kiem_kho.py
+.venv/bin/mypy scripts --ignore-missing-imports
 ```
 
 Repo không có bước build, không tự lên bản. Merge `main` không đăng gì ra ngoài.
 
-CI (`.github/workflows/ci.yml`): thử phá máy canh + máy canh + Gitleaks. Thư viện (pip, action) do Dependabot rà lỗ hổng
-và mở PR nâng bản (`.github/dependabot.yml`). **Không có bước kiểm kiểu**: repo chỉ có một script canh nhỏ, đã có test thử
-phá từng nhánh; thêm mã lớn hơn thì thêm kiểm kiểu.
+**Gemini làm ảnh / video** (`scripts/gemini_media.py`, skill `lam-anh` · `kich-ban-video`; Sếp chốt 2026-10-16): chạy trên
+máy có `GEMINI_API_KEY` **gói trả phí** (Google không dùng dữ liệu để huấn luyện). Script chỉ dùng thư viện có sẵn của
+Python, chỉ gọi `generativelanguage.googleapis.com`; chặn thư mục ra trong repo (bất biến 8), chặn ảnh gốc chưa khai
+`--anh-khach khong` / `DY-<số>` (bất biến 4), cộng dồn tiền tháng ở `~/.labban-mkt/chi-phi-ai.json` và dừng khi chạm trần
+500 nghìn (bất biến 2), ghi `<file>.nguon.json` nhắc gắn nhãn AI (bất biến 3). Giá và tỷ giá ghi trong script kèm ngày tra —
+Google đổi giá thì sửa ở đó. `--thu` xem giá không gọi mạng. Đã thử bằng test giả lập; **chưa gọi Gemini thật** lần nào.
+
+CI (`.github/workflows/ci.yml`): thử phá máy canh + máy canh + kiểm kiểu (mypy, thêm 2026-10-16 khi có script Gemini) +
+Gitleaks. Thư viện (pip, action) do Dependabot rà lỗ hổng và mở PR nâng bản (`.github/dependabot.yml`).
 
 **Sao lưu (A14):** dữ liệu trong git đã có bản trên GitHub. Ảnh / video ở Drive `LabbanMarketing` **chưa có sao lưu riêng**
 (2026-10-11, đã báo Sếp) — xoá nhầm trên Drive thì chỉ còn thùng rác 30 ngày.
@@ -118,8 +126,9 @@ Nợ cũ ở `NO_CU` / `NO_HAM_CU` / `NO_SO_CU` **chỉ được giảm**. Khở
 
 ## Cửa với repo khác — báo về autoLab (sổ luật A19)
 
-Hiện **chưa có cửa** với repo nào. Khi nối với repo khác (Hermes Marketing đọc thư mục này, số liệu từ TableLab, kho skill
-`labban-skills`…) thì theo sổ luật **A19**: mở PR ở autoLab sửa Sổ cửa + thẻ `docs/he-thong/mktLab.yaml`, ghi
+Hiện **chưa có cửa** với repo nào. Cửa ra **dịch vụ ngoài**: Gemini API (ảnh / video, 2026-10-16) — chữ mô tả và ảnh sản
+phẩm gửi sang Google, không gửi dữ liệu khách khi chưa có mã đồng ý. Khi nối với repo khác (Hermes Marketing đọc thư mục
+này, số liệu từ TableLab, kho skill `labban-skills`…) thì theo sổ luật **A19**: mở PR ở autoLab sửa Sổ cửa + thẻ `docs/he-thong/mktLab.yaml`, ghi
 «autoLab#<số>» vào mô tả PR ở đây. Không thêm được autoLab vào phiên thì ghi «cần cập nhật autoLab: …» và báo Sếp.
 
 ## Tên phiên — tên repo đứng trước (chủ DN chốt 2026-10-10)
