@@ -1,3 +1,3 @@
-pyyaml==6.0.2
+pyyaml==6.0.3
 mccabe==0.7.0
 mypy==2.4.0
