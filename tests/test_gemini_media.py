@@ -37,14 +37,19 @@ class CoSo(unittest.TestCase):
         self.tam = tempfile.TemporaryDirectory()
         self.goc = Path(self.tam.name)
         self.ra = self.goc / "ra"
-        env = {"LABBAN_SO_CHI_PHI": str(self.goc / "so.json"), "GEMINI_API_KEY": KHOA}
-        self.env = mock.patch.dict(os.environ, env)
+        self.env = mock.patch.dict(os.environ, {"GEMINI_API_KEY": KHOA})
+        self.rieng = mock.patch.object(gm, "THU_MUC_RIENG", self.goc / "rieng")
         self.env.start()
+        self.rieng.start()
         self.goi_mang: list = []
 
     def tearDown(self) -> None:
+        self.rieng.stop()
         self.env.stop()
         self.tam.cleanup()
+
+    def tien(self) -> int:
+        return gm.da_tieu(gm.doc_so(), gm.thang_nay())
 
     def chay(self, *doi_so: str, tra_loi=None) -> tuple[int, str]:
         cac_tra_loi = list(tra_loi or [])
@@ -86,7 +91,7 @@ class TestChan(CoSo):
         self.assertEqual(ma, 1)
 
     def test_vuot_tran_khong_goi_mang(self):
-        gm.ghi_so({gm.thang_nay(): [{"vnd": gm.TRAN_THANG, "trang_thai": "xong"}]})
+        gm.sua_so(lambda so: so.update({gm.thang_nay(): [{"vnd": gm.TRAN_THANG, "trang_thai": "xong"}]}))
         ma, chu = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", tra_loi=[])
         self.assertEqual(ma, 1)
         self.assertIn("vượt trần", chu)
@@ -105,7 +110,13 @@ class TestChan(CoSo):
         ma, chu = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", tra_loi=[loi])
         self.assertEqual(ma, 1)
         self.assertNotIn(KHOA, chu)
-        self.assertEqual(gm.da_tieu(gm.doc_so(), gm.thang_nay()), 0)  # lỗi thì không tính tiền
+        self.assertEqual(self.tien(), 0)  # Gemini từ chối (4xx) thì không tính tiền
+
+    def test_mat_mang_van_tinh_tien(self):
+        loi = urllib.error.URLError("mất mạng")
+        ma, _ = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", tra_loi=[loi])
+        self.assertEqual(ma, 1)
+        self.assertGreater(self.tien(), 0)  # có thể Google đã làm — vẫn cộng vào trần
 
     def test_khoa_khong_theo_chuyen_huong(self):
         self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a",
@@ -115,9 +126,33 @@ class TestChan(CoSo):
         self.assertEqual(yeu_cau.unredirected_hdrs.get("X-goog-api-key"), KHOA)
 
     def test_thieu_khoa(self):
-        with mock.patch.dict(os.environ, {"GEMINI_API_KEY": ""}), mock.patch.object(gm, "GOC", self.goc):
+        with mock.patch.dict(os.environ, {"GEMINI_API_KEY": ""}):
             with self.assertRaises(gm.Loi):
                 gm.doc_khoa()
+            (self.goc / "rieng").mkdir()
+            (self.goc / "rieng" / "gemini.env").write_text("KHAC=1\nGEMINI_API_KEY='k-tu-file'\n")
+            self.assertEqual(gm.doc_khoa(), "k-tu-file")
+
+    def test_anh_khach_ghi_ten_khi_khong_co_anh_goc_bi_chan(self):
+        ma, chu = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", "--anh-khach", "Chi Lan", "--thu")
+        self.assertEqual(ma, 1)
+        self.assertIn("không ghi tên khách", chu)
+
+    def test_khong_ghi_xuyen_lien_ket_tat(self):
+        self.ra.mkdir()
+        (self.ra / "a-1.png").symlink_to(gm.GOC / "README.md")
+        tra = {"steps": [{"type": "model_output", "content": [{"type": "image", "data": base64.b64encode(ANH_PNG).decode()}]}]}
+        ma, chu = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", tra_loi=[tra_json(tra)])
+        self.assertEqual(ma, 1)
+        self.assertIn("liên kết tắt", chu)
+
+    def test_so_hong_thi_dung(self):
+        gm.tep_so().parent.mkdir(parents=True)
+        gm.tep_so().write_text("{hỏng", encoding="utf-8")
+        ma, chu = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", tra_loi=[])
+        self.assertEqual(ma, 1)
+        self.assertIn("sổ chi phí", chu)
+        self.assertEqual(self.goi_mang, [])
 
 
 class TestChay(CoSo):
@@ -139,13 +174,23 @@ class TestChay(CoSo):
         nguon = json.loads((self.ra / "khung-1.png.nguon.json").read_text(encoding="utf-8"))
         self.assertEqual(nguon["anh_ai"], "co")
         self.assertEqual(nguon["anh_goc"], ["goc.jpg"])  # chỉ tên, không đường dẫn
-        self.assertGreater(gm.da_tieu(gm.doc_so(), gm.thang_nay()), 0)
+        self.assertGreater(self.tien(), 0)
         self.assertIn("nhan_ai: co", chu)
+
+    def test_tra_nhieu_anh_tinh_du_tien_va_khong_ghi_de(self):
+        hai = [{"type": "image", "data": base64.b64encode(x).decode()} for x in (b"a1", b"a2")]
+        tra = {"steps": [{"type": "model_output", "content": hai}]}
+        ma, _ = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", tra_loi=[tra_json(tra)])
+        self.assertEqual(ma, 0)
+        self.assertEqual(self.tien(), round(2 * gm.GIA_ANH["gemini-nano-banana-2.1"]["1K"] * gm.TY_GIA))
+        ma, chu = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", tra_loi=[tra_json(tra)])
+        self.assertEqual(ma, 1)
+        self.assertIn("không ghi đè", chu)
 
     def test_khong_tra_anh_thi_khong_tinh_tien(self):
         ma, _ = self.chay("anh", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "a", tra_loi=[tra_json({"steps": []})])
         self.assertEqual(ma, 1)
-        self.assertEqual(gm.da_tieu(gm.doc_so(), gm.thang_nay()), 0)
+        self.assertEqual(self.tien(), 0)
 
     def test_lam_video(self):
         uri = "https://generativelanguage.googleapis.com/v1beta/files/abc:download?alt=media"
@@ -158,6 +203,20 @@ class TestChay(CoSo):
         than = json.loads(self.goi_mang[0].data)
         self.assertEqual(than["parameters"]["personGeneration"], "allow_adult")
         self.assertEqual(than["parameters"]["durationSeconds"], "4")
+
+    def test_video_qua_gio_van_tinh_tien(self):
+        dang = [tra_json({"done": False}) for _ in range(gm.SO_LAN_HOI)]
+        ma, chu = self.chay("video", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "v",
+                            tra_loi=[tra_json({"name": "operations/op9"})] + dang)
+        self.assertEqual(ma, 1)
+        self.assertIn("operations/op9", chu)
+        self.assertGreater(self.tien(), 0)
+
+    def test_video_bao_loi_dang_chuoi(self):
+        ma, chu = self.chay("video", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "v",
+                            tra_loi=[tra_json({"name": "operations/op2"}), tra_json({"done": True, "error": "hỏng"})])
+        self.assertEqual(ma, 1)
+        self.assertIn("hỏng", chu)
 
     def test_video_1080p_phai_8_giay(self):
         ma, chu = self.chay("video", "--mo-ta", "x", "--ra", str(self.ra), "--ten", "v", "--giay", "4",

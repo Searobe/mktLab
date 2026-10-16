@@ -89,10 +89,10 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-kiem.txt   # mộ
 Repo không có bước build, không tự lên bản. Merge `main` không đăng gì ra ngoài.
 
 **Gemini làm ảnh / video** (`scripts/gemini_media.py`, skill `lam-anh` · `kich-ban-video`; Sếp chốt 2026-10-16): chạy trên
-máy có `GEMINI_API_KEY` **gói trả phí** (Google không dùng dữ liệu để huấn luyện). Script chỉ dùng thư viện có sẵn của
+máy có `GEMINI_API_KEY` **gói trả phí** (biến môi trường hoặc `~/.labban-mkt/gemini.env`, ngoài repo) (Google không dùng dữ liệu để huấn luyện). Script chỉ dùng thư viện có sẵn của
 Python, chỉ gọi `generativelanguage.googleapis.com`; chặn thư mục ra trong repo (bất biến 8), chặn ảnh gốc chưa khai
-`--anh-khach khong` / `DY-<số>` (bất biến 4), cộng dồn tiền tháng ở `~/.labban-mkt/chi-phi-ai.json` và dừng khi chạm trần
-500 nghìn (bất biến 2), ghi `<file>.nguon.json` nhắc gắn nhãn AI (bất biến 3). Giá và tỷ giá ghi trong script kèm ngày tra —
+`--anh-khach khong` / `DY-<số>` (bất biến 4), cộng dồn tiền tháng ở `~/.labban-mkt/chi-phi-ai.json` (khoá file; mất mạng / hết giờ
+vẫn tính vì Google có thể đã làm) và dừng khi chạm trần 500 nghìn (bất biến 2), ghi `<file>.nguon.json` nhắc gắn nhãn AI (bất biến 3). Giá và tỷ giá ghi trong script kèm ngày tra —
 Google đổi giá thì sửa ở đó. `--thu` xem giá không gọi mạng. Đã thử bằng test giả lập; **chưa gọi Gemini thật** lần nào.
 
 CI (`.github/workflows/ci.yml`): thử phá máy canh + máy canh + kiểm kiểu (mypy, thêm 2026-10-16 khi có script Gemini) +
